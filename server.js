@@ -49,9 +49,7 @@ app.get(`/`, (req, res) => {
 //   await User.deleteMany(queryObject);
 // });
 
-
-// app.use(express.static('./public'));
-
+// app.use(express.static('public'));
 const __dirname = path.resolve();
 app.use("/public", express.static(path.join(__dirname, "/public")));
 
