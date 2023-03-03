@@ -30,7 +30,7 @@ import multer from 'multer'
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, '/public/menu')
+    cb(null, 'public/menu')
   },
   filename(req, file, cb) {
     cb(
