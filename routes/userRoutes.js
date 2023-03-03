@@ -13,6 +13,7 @@ import {
   softDeleteUser,
   findDeletedUser,
   restoreDeletedUser,
+  updateUserPassword,
 } from "../controllers/userController.js";
 
 import exportUser from "../controllers/exportUserController.js";
@@ -37,7 +38,8 @@ router.post("/login", authUser);
 router
   .route("/profile")
   .get(protect, getUserProfile)
-  .put(protect, updateUserProfile);
+  .put(protect, upload.single("avatar"), updateUserProfile)
+  .patch(protect, updateUserPassword);
 
 router.route("/exportUser").get(protect, exportUser);
 

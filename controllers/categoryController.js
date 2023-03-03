@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Category from "../models/categoryModel.js";
-
+import { validationResult } from "express-validator";
 const getCategories = asyncHandler(async (req, res) => {
   const { search, sortBy } = req.query;
   const queryObject = {};
@@ -64,6 +64,11 @@ const getCategoryById = asyncHandler(async (req, res) => {
 });
 
 const createCategory = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const category = new Category({
     name: req.body.name,
     description: req.body.description,
@@ -74,7 +79,7 @@ const createCategory = asyncHandler(async (req, res) => {
 
 const updateCategory = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
-  
+
   const category = await Category.findById(req.params.id);
   if (category) {
     category.name = name;

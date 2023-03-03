@@ -10,7 +10,7 @@ const getPurchases = asyncHandler(async (req, res) => {
   if (search) {
     queryObject["$or"] = [
       {
-        name: { $regex: search, $options: "i" },
+        'supplierDoc.name': { $regex: search, $options: "i" },
       },
       // {
       //   description: { $regex: search, $options: "i" },
@@ -18,7 +18,26 @@ const getPurchases = asyncHandler(async (req, res) => {
     ];
   }
 
-  let result = Purchase.find(queryObject).populate("supplier", ["name"]);
+  // let result = Purchase.find(queryObject).populate("supplier", ["name"]);
+
+  let result = Purchase.aggregate([
+    {
+      $lookup: {
+        from: "suppliers",
+        localField: "supplier",
+        foreignField: "_id",
+        as: "supplierDoc",
+      },
+    },
+    {
+      $unwind: {
+        path: "$supplierDoc",
+      },
+    },
+    {
+      $match: queryObject,
+    },
+  ]);
 
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.rowsPerPage) || 2;
@@ -45,7 +64,7 @@ const getPurchases = asyncHandler(async (req, res) => {
     {
       text: "Supplier",
       sortable: false,
-      value: "supplier.name",
+      value: "supplierDoc.name",
     },
 
     {
@@ -79,7 +98,7 @@ const createPurchase = asyncHandler(async (req, res) => {
     supplier: supplierId,
     date,
     total,
-    user:req.user._id
+    user: req.user._id,
   });
 
   const createdPurchase = await purchase.save();
@@ -141,7 +160,6 @@ const getPurchaseById = asyncHandler(async (req, res) => {
         foreignField: "purchase",
         as: "purchaseDetailDoc",
       },
-      
     },
   ]);
   if (purchase) {

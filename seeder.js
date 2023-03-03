@@ -1,56 +1,46 @@
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-import colors from 'colors'
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import colors from "colors";
 
+import User from "./models/userModel.js";
 
-import User from './models/userModel.js'
-import Color from './models/colorModel.js'
+import connectDB from "./config/db.js";
 
-import connectDB from './config/db.js'
+import users from "./data/user.js";
 
-import users from './data/user.js'
-import colors1 from './data/color.js'
+dotenv.config();
 
-dotenv.config()
-
-connectDB()
+connectDB();
 
 const importData = async () => {
   try {
-
-   
-    await User.deleteMany()
-    await Color.deleteMany()
+    await User.deleteMany();
     // const createdUsers = await User.insertMany(users)
 
-    await User.insertMany(users)
-    await Color.insertMany(colors1)
+    await User.insertMany(users);
 
-
-    console.log('Data Imported!'.green.inverse)
-    process.exit()
+    console.log("Data Imported!".green.inverse);
+    process.exit();
   } catch (error) {
-    console.error(`${error}`.red.inverse)
-    process.exit(1)
+    console.error(`${error}`.red.inverse);
+    process.exit(1);
   }
-}
+};
 
 const destroyData = async () => {
   try {
+    await User.deleteMany();
 
-    await User.deleteMany()
-    await Color.deleteMany()
-
-    console.log('Data Destroyed!'.red.inverse)
-    process.exit()
+    console.log("Data Destroyed!".red.inverse);
+    process.exit();
   } catch (error) {
-    console.error(`${error}`.red.inverse)
-    process.exit(1)
+    console.error(`${error}`.red.inverse);
+    process.exit(1);
   }
-}
+};
 
-if (process.argv[2] === '-d') {
-  destroyData()
+if (process.argv[2] === "-d") {
+  destroyData();
 } else {
-  importData()
+  importData();
 }

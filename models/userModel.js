@@ -2,13 +2,18 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import fs from "fs";
 
-import { softDeletePlugin } from 'soft-delete-plugin-mongoose'
-
-
-
+import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -50,6 +55,14 @@ userSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+// fullname
+userSchema.methods.setFullName = async function (
+  enteredFirstName,
+  enteredLastName
+) {
+  this.name = enteredFirstName + enteredLastName;
+};
 
 // update and replace new file
 

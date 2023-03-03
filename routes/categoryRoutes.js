@@ -8,10 +8,10 @@ import {
   fetchCategories,
 } from "../controllers/categoryController.js";
 import { protect } from "../middleware/authMiddleware.js";
-
+import { check } from "express-validator";
 const router = express.Router();
 
-router.route("/").get(getCategories).post(createCategory);
+router.route("/").get(getCategories).post(check('name','Category is required'),createCategory);
 
 // router.route("/findDeletedCategory").get(findDeletedCategory)
 

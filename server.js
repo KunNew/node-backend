@@ -11,9 +11,6 @@ import connectDB from "./config/db.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 import userRoutes from "./routes/userRoutes.js";
-import brandRoutes from "./routes/brandRoutes.js";
-import colorRoutes from "./routes/colorRoutes.js";
-import modelRoutes from "./routes/modelRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -21,6 +18,9 @@ import tableRoutes from "./routes/tableRoutes.js";
 import menuRoutes from "./routes/MenuRoutes.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
 import purchaseRoutes from "./routes/purchaseRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
+
 import User from "./models/userModel.js";
 // import uploadRoutes from "./routes/uploadRoutes.js";
 dotenv.config();
@@ -42,19 +42,19 @@ app.get(`/`, (req, res) => {
 });
 
 // schedule
-cron.schedule("* * * * *", async () => {
-  console.log("running a task every minute");
-  const queryObject = { isDeleted: true };
-  await User.deleteMany(queryObject);
-});
+// cron.schedule("* * * * *", async () => {
+//   console.log("running a task every minute");
+//   const queryObject = { isDeleted: true };
+//   await User.deleteMany(queryObject);
+// });
 
 // app.use(express.static('public'));
+const __dirname = path.resolve();
+app.use("/public", express.static(path.join(__dirname, "/public")));
 
+app.use(`/api/reports`, reportRoutes);
 
 app.use("/api/users", userRoutes);
-app.use("/api/brands", brandRoutes);
-app.use("/api/colors", colorRoutes);
-app.use(`/api/models`, modelRoutes);
 app.use(`/api/products`, productRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/categories", categoryRoutes);
@@ -62,10 +62,10 @@ app.use("/api/tables", tableRoutes);
 app.use("/api/menus", menuRoutes);
 app.use(`/api/suppliers`, supplierRoutes);
 app.use(`/api/purchases`, purchaseRoutes);
-// app.use("/api/upload", uploadRoutes);
 
-const __dirname = path.resolve();
-app.use("/public", express.static(path.join(__dirname, "/public")));
+app.use("/api/dashboards", dashboardRoutes);
+
+// app.use("/api/upload", uploadRoutes);
 
 //customer-error
 app.use(notFound);
