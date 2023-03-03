@@ -51,7 +51,7 @@ app.get(`/`, (req, res) => {
 
 // app.use(express.static('public'));
 const __dirname = path.resolve();
-app.use("/public", express.static(path.join(__dirname, "/public")));
+app.use("/public", express.static(path.join(__dirname, "./public")));
 
 app.use(`/api/reports`, reportRoutes);
 
